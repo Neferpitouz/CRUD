@@ -7,8 +7,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "Person")
-public class Person {
+@Table(name = "Users")
+public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,11 +28,11 @@ public class Person {
     @Email
     private String email;
 
-    public Person() {
+    public User() {
 
     }
 
-    public Person(String name, int age) {
+    public User(String name, int age) {
         this.name = name;
         this.age = age;
     }

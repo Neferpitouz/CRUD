@@ -6,67 +6,67 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import spring.mvc.models.Person;
-import spring.mvc.services.PeopleService;
+import spring.mvc.models.User;
+import spring.mvc.services.UserService;
 
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/people")
-public class PersonController {
+@RequestMapping("/users")
+public class UserController {
 
-    private final PeopleService peopleService;
+    private final UserService userService;
 
     @Autowired
-    public PersonController(PeopleService peopleService) {
-        this.peopleService = peopleService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @RequestMapping()
     public String index(Model model) {
-        model.addAttribute("people", peopleService.findAll());
+        model.addAttribute("user", userService.findAll());
         return "index";
     }
 
     @RequestMapping("/{id}")
     public String find_by_id(@PathVariable("id") int id,  Model model) {
-        model.addAttribute("person", peopleService.findOne(id));
+        model.addAttribute("user", userService.findOne(id));
         return "show";
     }
 
     @RequestMapping("/new")
-    public String new_person(@ModelAttribute("new_person") Person person) {
+    public String new_person(@ModelAttribute("new_user") User user) {
         return "new";
     }
 
     @PostMapping()
-    public String create_person(@ModelAttribute("new_person") @Valid Person person,
+    public String create_person(@ModelAttribute("new_user") @Valid User user,
                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return "new";
-        peopleService.savePerson(person);
-        return "redirect:/people";
+        userService.savePerson(user);
+        return "redirect:/users";
     }
 
     @GetMapping("{id}/edit")
     public String edit_person(Model model, @PathVariable("id") int id) {
-        model.addAttribute("person", peopleService.findOne(id));
+        model.addAttribute("user", userService.findOne(id));
         return "edit";
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("person") @Valid Person person,
+    public String update(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors())
             return "edit";
-        peopleService.updatePerson(id, person);
-        return "redirect:/people";
+        userService.updatePerson(id, user);
+        return "redirect:/users";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        peopleService.deletePerson(id);
-        return "redirect:/people";
+        userService.deletePerson(id);
+        return "redirect:/users";
     }
 }
 
