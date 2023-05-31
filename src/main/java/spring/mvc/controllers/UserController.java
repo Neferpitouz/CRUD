@@ -22,39 +22,39 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping()
+    @GetMapping
     public String index(Model model) {
         model.addAttribute("user", userService.findAll());
         return "index";
     }
 
-    @RequestMapping("/{id}")
-    public String find_by_id(@PathVariable("id") int id,  Model model) {
+    @GetMapping("/{id}")
+    public String findById(@PathVariable("id") int id, Model model) {
         model.addAttribute("user", userService.findOne(id));
         return "show";
     }
 
-    @RequestMapping("/new")
-    public String new_person(@ModelAttribute("new_user") User user) {
+    @GetMapping("/new")
+    public String newPerson(@ModelAttribute("new_user") User user) {
         return "new";
     }
 
-    @PostMapping()
-    public String create_person(@ModelAttribute("new_user") @Valid User user,
-                                BindingResult bindingResult) {
+    @PostMapping
+    public String createPerson(@ModelAttribute("new_user") @Valid User user,
+                               BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return "new";
         userService.savePerson(user);
         return "redirect:/users";
     }
 
-    @GetMapping("{id}/edit")
-    public String edit_person(Model model, @PathVariable("id") int id) {
+    @GetMapping("/{id}/edit")
+    public String editPerson(Model model, @PathVariable("id") int id) {
         model.addAttribute("user", userService.findOne(id));
         return "edit";
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}")
     public String update(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors())
@@ -63,7 +63,7 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id) {
         userService.deletePerson(id);
         return "redirect:/users";
