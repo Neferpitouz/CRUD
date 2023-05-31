@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import spring.mvc.models.User;
 import spring.mvc.services.UserService;
-
 import javax.validation.Valid;
 
 @Controller
