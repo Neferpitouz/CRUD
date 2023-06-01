@@ -14,6 +14,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -24,7 +25,6 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-
 @Configuration
 @ComponentScan("spring.mvc")
 @PropertySource("classpath:hibernate.properties")
@@ -34,7 +34,6 @@ import java.util.Properties;
 public class SpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
-
     private final Environment env;
 
     @Autowired
@@ -66,19 +65,16 @@ public class SpringConfig implements WebMvcConfigurer {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         resolver.setTemplateEngine(templateEngine());
         resolver.setCharacterEncoding("UTF-8");
-
         registry.viewResolver(resolver);
     }
 
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-
         dataSource.setDriverClassName(env.getRequiredProperty("hibernate.driver_class"));
         dataSource.setUrl(env.getRequiredProperty("hibernate.connection.url"));
         dataSource.setUsername(env.getRequiredProperty("hibernate.connection.username"));
         dataSource.setPassword(env.getRequiredProperty("hibernate.connection.password"));
-
         return dataSource;
     }
 
@@ -86,7 +82,6 @@ public class SpringConfig implements WebMvcConfigurer {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", env.getRequiredProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", env.getRequiredProperty("hibernate.show_sql"));
-
         return properties;
     }
 
@@ -95,11 +90,9 @@ public class SpringConfig implements WebMvcConfigurer {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         em.setPackagesToScan("spring.mvc.models");
-
         final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(hibernateProperties());
-
         return em;
     }
 
@@ -107,7 +100,11 @@ public class SpringConfig implements WebMvcConfigurer {
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-
         return transactionManager;
+    }
+
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new HiddenHttpMethodFilter();
     }
 }
